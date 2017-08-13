@@ -1,0 +1,13 @@
+package: .
+import:
+- package: github.com/kataras/iris
+  version: ^8.2.1
+- package: github.com/kataras/golog
+- package: github.com/spf13/viper
+- package: github.com/rs/zerolog
+  version: ^1.2.2
+  subpackages:
+  - log
+- package: gopkg.in/mgo.v2
+- package: github.com/go-redis/redis
+  version: ^6.5.6

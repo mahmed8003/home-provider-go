@@ -1,0 +1,20 @@
+{
+    "log_level": "debug",
+    "server": {
+        "port": ":8888",
+        "enable_logs": true
+    },
+    "jwt": {
+        "algorithm": "HS512",
+        "secret": "eL9zeUaU7DN208LSWhFtTO0PX0KhZ0LB",
+        "duration": 5184000
+    },
+    "database": {
+        "url": "mongodb://localhost/devices_db"
+    },
+    "redis": {
+        "addr": "127.0.0.1:6379",
+        "password": "",
+        "db": 0
+    }
+}
