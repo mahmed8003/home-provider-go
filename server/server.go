@@ -3,14 +3,13 @@ package server
 import (
 	"home-provider/config"
 
-	"github.com/kataras/iris"
-	"github.com/kataras/iris/middleware/recover"
+	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog"
 )
 
 type serverInfo struct {
 	logger zerolog.Logger
-	app    *iris.Application
+	engine *gin.Engine
 }
 
 var server *serverInfo
@@ -20,32 +19,29 @@ Start :
 */
 func Start(logger zerolog.Logger, config config.Server) {
 
-	app := iris.New()
+	// Creates a router without any middleware by default
+	r := gin.New()
 
-	// disbale default logger
-	app.Logger().SetLevel("disable")
-
-	// register recovery module
-	app.Use(recover.New())
-
-	// register request logger
-	app.Use(NewLogger(logger, true, true, true, true, config.EnableLogs))
+	// Global middleware
+	//r.Use(gin.Logger())
+	r.Use(Logger(logger, config.EnableLogs))
+	r.Use(gin.Recovery())
 
 	// init routes
-	initRoutes(app)
+	initRoutes(r)
 
-	// start http server
-	app.Run(iris.Addr(config.Port))
+	// Listen and serve
+	r.Run(config.Port)
 
 	server = &serverInfo{
 		logger: logger,
-		app:    app,
+		engine: r,
 	}
 }
 
 /*
 GetServer :
 */
-func GetServer() *iris.Application {
-	return server.app
+func GetServer() *gin.Engine {
+	return server.engine
 }
