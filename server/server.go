@@ -1,52 +1,30 @@
 package server
 
 import (
-	"home-provider/config"
+	"home-provider/app"
 
 	"github.com/gin-gonic/gin"
-	"github.com/rs/zerolog"
 )
 
-type serverInfo struct {
-	logger zerolog.Logger
-	router *gin.Engine
-}
-
-var server *serverInfo
-
 /*
-Start :
+NewRouter :
 */
-func NewRouter(logger zerolog.Logger, config config.Server, env string) *gin.Engine {
+func NewRouter(ctx app.Context) *gin.Engine {
 
 	// Creates a router
-	if env == "production" {
+	if ctx.Env() == "production" {
 		gin.SetMode(gin.ReleaseMode)
 	}
 
 	r := gin.New()
 
+	config := ctx.Config().Server
 	// Global middleware
-	r.Use(Logger(logger, config.EnableLogs))
+	r.Use(Logger(ctx.Logger(), config.EnableLogs))
 	r.Use(gin.Recovery())
 
-	// init routes
-	initRoutes(r)
-
-	// Listen and serve
-	//r.Run(config.Port)
-
-	server = &serverInfo{
-		logger: logger,
-		router: r,
-	}
+	// add routes
+	addRoutes(ctx, r)
 
 	return r
-}
-
-/*
-GetRouter :
-*/
-func GetRouter() *gin.Engine {
-	return server.router
 }

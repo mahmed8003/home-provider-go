@@ -1,13 +1,14 @@
 package server
 
 import (
+	"home-provider/app"
 	"home-provider/controllers"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
-func initRoutes(router *gin.Engine) {
+func addRoutes(ctx app.Context, router *gin.Engine) {
 
 	router.GET("/ping", func(c *gin.Context) {
 		c.String(http.StatusOK, "pong")
@@ -16,7 +17,7 @@ func initRoutes(router *gin.Engine) {
 	v1 := router.Group("v1")
 	{
 		// init user controller
-		user := new(controllers.UserController)
+		user := controllers.NewUserController(ctx)
 
 		// create user routes
 		usersRoutes := v1.Group("users")

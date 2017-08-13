@@ -4,6 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"home-provider/app"
 	"home-provider/config"
 	"home-provider/db"
 	"home-provider/server"
@@ -46,13 +47,15 @@ func main() {
 		logger.Info().Msg("Redis connection successfull")
 	}
 
+	appCtx := app.NewContext(*enviroment, appConfig, logger, db.GetDB(), db.GetRedis())
+
 	addr := ":" + os.Getenv("PORT")
 	if addr == ":" {
 		addr = appConfig.Server.Port
 	}
 
 	// create router
-	router := server.NewRouter(logger, appConfig.Server, *enviroment)
+	router := server.NewRouter(appCtx)
 
 	// create http server
 	server := &http.Server{
