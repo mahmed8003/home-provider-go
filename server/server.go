@@ -9,7 +9,7 @@ import (
 
 type serverInfo struct {
 	logger zerolog.Logger
-	engine *gin.Engine
+	router *gin.Engine
 }
 
 var server *serverInfo
@@ -17,13 +17,16 @@ var server *serverInfo
 /*
 Start :
 */
-func Start(logger zerolog.Logger, config config.Server) {
+func NewRouter(logger zerolog.Logger, config config.Server, env string) *gin.Engine {
 
-	// Creates a router without any middleware by default
+	// Creates a router
+	if env == "production" {
+		gin.SetMode(gin.ReleaseMode)
+	}
+
 	r := gin.New()
 
 	// Global middleware
-	//r.Use(gin.Logger())
 	r.Use(Logger(logger, config.EnableLogs))
 	r.Use(gin.Recovery())
 
@@ -31,17 +34,19 @@ func Start(logger zerolog.Logger, config config.Server) {
 	initRoutes(r)
 
 	// Listen and serve
-	r.Run(config.Port)
+	//r.Run(config.Port)
 
 	server = &serverInfo{
 		logger: logger,
-		engine: r,
+		router: r,
 	}
+
+	return r
 }
 
 /*
-GetServer :
+GetRouter :
 */
-func GetServer() *gin.Engine {
-	return server.engine
+func GetRouter() *gin.Engine {
+	return server.router
 }
