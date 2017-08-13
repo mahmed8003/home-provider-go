@@ -59,7 +59,7 @@ func LoadConfig(env string) error {
 	v := viper.New()
 	v.SetConfigType("json")
 	v.SetConfigName(env)
-	v.AddConfigPath("./config/")
+	v.AddConfigPath("./")
 	if err := v.ReadInConfig(); err != nil {
 		return fmt.Errorf("Failed to read the configuration file: %s", err)
 	}
