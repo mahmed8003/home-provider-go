@@ -1,4 +1,4 @@
-package: .
+package: home-provider
 import:
 - package: github.com/kataras/golog
 - package: github.com/spf13/viper
