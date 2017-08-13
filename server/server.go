@@ -4,7 +4,6 @@ import (
 	"home-provider/config"
 
 	"github.com/kataras/iris"
-	"github.com/kataras/iris/context"
 	"github.com/kataras/iris/middleware/recover"
 	"github.com/rs/zerolog"
 )
@@ -22,15 +21,20 @@ Start :
 func Start(logger zerolog.Logger, config config.Server) {
 
 	app := iris.New()
+
+	// disbale default logger
 	app.Logger().SetLevel("disable")
 
+	// register recovery module
 	app.Use(recover.New())
+
+	// register request logger
 	app.Use(NewLogger(logger, true, true, true, true, config.EnableLogs))
 
-	app.Get("/ping", func(ctx context.Context) {
-		ctx.WriteString("pong")
-	})
+	// init routes
+	initRoutes(app)
 
+	// start http server
 	app.Run(iris.Addr(config.Port))
 
 	server = &serverInfo{
