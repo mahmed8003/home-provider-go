@@ -21,6 +21,6 @@ func addRoutes(ctx app.Context, router *gin.Engine) {
 
 		// create user routes
 		usersRoutes := v1.Group("users")
-		usersRoutes.GET("/", user.CreateUser)
+		usersRoutes.POST("/", user.CreateUser)
 	}
 }

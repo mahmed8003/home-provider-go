@@ -22,9 +22,19 @@ func NewRouter(ctx app.Context) *gin.Engine {
 	// Global middleware
 	r.Use(Logger(ctx.Logger(), config.EnableLogs))
 	r.Use(gin.Recovery())
+	r.Use(errorHandler)
 
 	// add routes
 	addRoutes(ctx, r)
 
 	return r
+}
+
+func errorHandler(c *gin.Context) {
+	c.Next()
+
+	// TODO: Handle it in a better way
+	if len(c.Errors) > 0 {
+		c.String(401, "I am here with error")
+	}
 }
