@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"home-provider/app"
+	"home-provider/forms"
 
 	routing "github.com/go-ozzo/ozzo-routing"
 )
@@ -26,6 +27,7 @@ func NewUserController(ctx app.Context) *UserController {
 CreateUser :
 */
 func (u UserController) CreateUser(c *routing.Context) error {
+
 	/*
 		var json forms.UserSignup
 		if c.BindJSON(&json) == nil {
@@ -35,5 +37,6 @@ func (u UserController) CreateUser(c *routing.Context) error {
 			//c.Abort()
 		}
 	*/
-	return c.Write("I am user list")
+	var json forms.UserSignup
+	return c.Write(json)
 }

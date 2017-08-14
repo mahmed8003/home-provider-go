@@ -6,4 +6,5 @@ type UserSignup struct {
 	BirthDay string `json:"birthday" binding:"required"`
 	Gender   string `json:"gender" binding:"required"`
 	PhotoURL string `json:"photo_url" binding:"required"`
+	Age      int    `json:"age" binding:"required"`
 }
