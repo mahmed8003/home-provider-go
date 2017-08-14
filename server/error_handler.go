@@ -37,7 +37,10 @@ func errorHandler(c *routing.Context) error {
 		c.Write(boomError)
 
 	default:
-		return err
+		boomError := boom.ServerUnavailable("Ops! Something went wrong, please try again later")
+		boomError.Detail = err.Error()
+		c.Response.WriteHeader(boomError.Code)
+		c.Write(boomError)
 	}
 
 	return nil

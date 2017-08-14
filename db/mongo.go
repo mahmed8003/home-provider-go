@@ -9,12 +9,14 @@ import (
 )
 
 /*
-Database :
+mongoDB :
 */
 type mongoDB struct {
 	logger zerolog.Logger
 	conn   *mgo.Session
 	db     *mgo.Database
+	//
+	userDao UserDao
 }
 
 /*
@@ -40,10 +42,17 @@ func ConnectMongo(logger zerolog.Logger, config config.Database) (Database, erro
 	}
 
 	db := conn.DB(config.Database)
+
+	//
+	userColl := db.C("users")
+	userDao := NewUserDao(userColl)
+	//
+
 	mongo := &mongoDB{
-		logger: logger,
-		conn:   conn,
-		db:     db,
+		logger:  logger,
+		conn:    conn,
+		db:      db,
+		userDao: userDao,
 	}
 
 	logger.Info().Msg("Database connection successfull")
@@ -54,4 +63,9 @@ func ConnectMongo(logger zerolog.Logger, config config.Database) (Database, erro
 func (db *mongoDB) Close() {
 	db.logger.Info().Msg("Disconnecting from database")
 	db.conn.Close()
+}
+
+// GetUserDao : Returns.
+func (db *mongoDB) GetUserDao() UserDao {
+	return db.userDao
 }

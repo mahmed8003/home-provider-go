@@ -2,8 +2,8 @@ package controllers
 
 import (
 	"home-provider/app"
-	"home-provider/boom"
 	"home-provider/forms"
+	"home-provider/models"
 
 	routing "github.com/go-ozzo/ozzo-routing"
 )
@@ -27,7 +27,7 @@ func NewUserController(ctx app.Context) *UserController {
 /*
 CreateUser :
 */
-func (u UserController) CreateUser(c *routing.Context) error {
+func (ctrl UserController) CreateUser(c *routing.Context) error {
 
 	var form forms.UserSignup
 	if err := c.Read(&form); err != nil {
@@ -37,7 +37,12 @@ func (u UserController) CreateUser(c *routing.Context) error {
 	if err := form.Validate(); err != nil {
 		return err
 	}
-	//return c.Write(json)
 
-	return boom.BadRequest("I am bad request")
+	user := models.User{}
+	userDao := ctrl.ctx.Db().GetUserDao()
+	if err := userDao.CreateUser(&user); err != nil {
+		return err
+	}
+
+	return c.Write(user)
 }
