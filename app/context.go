@@ -2,33 +2,33 @@ package app
 
 import (
 	"home-provider/config"
+	"home-provider/db"
 
 	"github.com/go-redis/redis"
 	"github.com/rs/zerolog"
-	mgo "gopkg.in/mgo.v2"
 )
 
 /*
 Context :
 */
 type Context struct {
-	env      string
-	config   config.AppConfig
-	logger   zerolog.Logger
-	database *mgo.Session
-	redis    *redis.Client
+	env    string
+	config config.AppConfig
+	logger zerolog.Logger
+	db     db.Database
+	redis  *redis.Client
 }
 
 /*
 NewContext :
 */
-func NewContext(env string, config config.AppConfig, logger zerolog.Logger, database *mgo.Session, redis *redis.Client) Context {
+func NewContext(env string, config config.AppConfig, logger zerolog.Logger, db db.Database, redis *redis.Client) Context {
 	return Context{
-		env:      env,
-		config:   config,
-		logger:   logger,
-		database: database,
-		redis:    redis,
+		env:    env,
+		config: config,
+		logger: logger,
+		db:     db,
+		redis:  redis,
 	}
 }
 
@@ -54,10 +54,10 @@ func (c Context) Logger() zerolog.Logger {
 }
 
 /*
-Database :
+Db :
 */
-func (c Context) Database() *mgo.Session {
-	return c.database
+func (c Context) Db() db.Database {
+	return c.db
 }
 
 /*

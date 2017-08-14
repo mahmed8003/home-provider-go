@@ -35,10 +35,9 @@ func main() {
 	zerolog.SetGlobalLevel(utils.GetLogLevelByString(appConfig.LogLevel))
 	logger := zerolog.New(os.Stdout).With().Timestamp().Logger()
 
-	if err := db.ConnectMongo(logger, appConfig.Database); err != nil {
+	database, err := db.ConnectMongo(logger, appConfig.Database)
+	if err != nil {
 		logger.Fatal().Err(err).Msg("Failed to connect to database")
-	} else {
-		logger.Info().Msg("Database connection successfull")
 	}
 
 	if err := db.ConnectRedis(logger, appConfig.Redis); err != nil {
@@ -52,7 +51,7 @@ func main() {
 		addr = appConfig.Server.Port
 	}
 	appConfig.Server.Port = addr
-	appCtx := app.NewContext(*enviroment, appConfig, logger, db.GetDB(), db.GetRedis())
+	appCtx := app.NewContext(*enviroment, appConfig, logger, database, db.GetRedis())
 
 	// create router
 	router := server.NewRouter(appCtx)
@@ -80,7 +79,7 @@ func main() {
 	if err := server.Shutdown(ctx); err != nil {
 		logger.Fatal().Err(err).Msg("Server shutdown")
 	}
-	db.DisconnectMongo()
+	database.Close()
 	db.DisconnectRedis()
 	logger.Info().Msg("Exiting ...")
 }

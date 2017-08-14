@@ -8,40 +8,50 @@ import (
 	mgo "gopkg.in/mgo.v2"
 )
 
-type dbConnecion struct {
-	logger  zerolog.Logger
-	session *mgo.Session
+/*
+Database :
+*/
+type mongoDB struct {
+	logger zerolog.Logger
+	conn   *mgo.Session
+	db     *mgo.Database
 }
-
-var dbCon *dbConnecion
 
 /*
 ConnectMongo :
 */
-func ConnectMongo(logger zerolog.Logger, config config.Database) error {
+func ConnectMongo(logger zerolog.Logger, config config.Database) (Database, error) {
 
 	logger.Info().Msg("Connecting to database")
-	session, err := mgo.Dial(config.Url)
-	dbCon = &dbConnecion{
-		logger:  logger,
-		session: session,
+	conn, err := mgo.Dial(config.Uri)
+	if err != nil {
+		return nil, err
 	}
-	return err
+
+	if config.Username != "" {
+		cred := &mgo.Credential{
+			Username: config.Username,
+			Password: config.Password,
+		}
+
+		if err := conn.Login(cred); err != nil {
+			return nil, err
+		}
+	}
+
+	db := conn.DB(config.Database)
+	mongo := &mongoDB{
+		logger: logger,
+		conn:   conn,
+		db:     db,
+	}
+
+	logger.Info().Msg("Database connection successfull")
+	return mongo, nil
 }
 
-/*
-GetDB :
-*/
-func GetDB() *mgo.Session {
-	return dbCon.session
-}
-
-/*
-DisconnectMongo :
-*/
-func DisconnectMongo() {
-	if dbCon != nil {
-		dbCon.logger.Info().Msg("Disconnecting from database")
-		dbCon.session.Close()
-	}
+// Close : Disconnect from database.
+func (db *mongoDB) Close() {
+	db.logger.Info().Msg("Disconnecting from database")
+	db.conn.Close()
 }

@@ -27,7 +27,10 @@ type Jwt struct {
 Database :
 */
 type Database struct {
-	Url string `mapstructure:"url"`
+	Uri      string `mapstructure:"uri"`
+	Username string `mapstructure:"username"`
+	Password string `mapstructure:"password"`
+	Database string `mapstructure:"database"`
 }
 
 /*
