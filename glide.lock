@@ -1,17 +1,12 @@
-hash: 98f83f78e1c06c9b727dcaddfeea0789a1a58fd5e2f2ceb5a8a8d85dfd8495f8
-updated: 2017-08-14T11:02:30.299938046+05:00
+hash: 5e849c6209692344be9206d952fd7a7b2e440df1afd71f0f1d801b8927ca7033
+updated: 2017-08-14T13:20:19.316554029+05:00
 imports:
 - name: github.com/fsnotify/fsnotify
   version: 4da3e2cfbabc9f751898f250b49f2439785783a1
-- name: github.com/gin-contrib/sse
-  version: 22d885f9ecc78bf4ee5d72b937e4bbcdc58e8cae
-- name: github.com/gin-gonic/gin
-  version: d459835d2b077e44f7c9b453505ee29881d5d12d
-  subpackages:
-  - binding
-  - render
 - name: github.com/go-chi/chi
   version: 25354a53cca531cb2efd3f1d3c565d90ff04d802
+  subpackages:
+  - middleware
 - name: github.com/go-redis/redis
   version: 89515eebd1b5761486abd32d9e84a8f55dda7740
   subpackages:
@@ -20,10 +15,6 @@ imports:
   - internal/hashtag
   - internal/pool
   - internal/proto
-- name: github.com/golang/protobuf
-  version: 1909bc2f63dc92bb931deace8b8312c4db72d12f
-  subpackages:
-  - proto
 - name: github.com/hashicorp/hcl
   version: 392dba7d905ed5d04a5794ba89f558b27e2ba1ca
   subpackages:
@@ -39,8 +30,6 @@ imports:
   version: 2ed680e7b1f34147164fa8073373e14fce02ac30
 - name: github.com/magiconair/properties
   version: be5ece7dd465ab0765a9682137865547526d1dfb
-- name: github.com/mattn/go-isatty
-  version: fc9e8d8ef48496124e79ae0df75490096eccf6fe
 - name: github.com/mitchellh/mapstructure
   version: d0303fe809921458f417bcf828397a65db30a7e4
 - name: github.com/pelletier/go-toml
@@ -62,10 +51,6 @@ imports:
   version: e57e3eeb33f795204c1ca35f56c44f83227c6e66
 - name: github.com/spf13/viper
   version: 25b30aa063fc18e48662b86996252eabdcf2f0c7
-- name: github.com/ugorji/go
-  version: 5efa3251c7f7d05e5d9704a69a984ec9f1386a40
-  subpackages:
-  - codec
 - name: golang.org/x/sys
   version: c84c1ab9fd18cdd4c23dd021c10f5f46dea95e46
   subpackages:
@@ -75,8 +60,6 @@ imports:
   subpackages:
   - transform
   - unicode/norm
-- name: gopkg.in/go-playground/validator.v8
-  version: 5f1438d3fca68893a817e4a66806cea46a9e4ebf
 - name: gopkg.in/mgo.v2
   version: 3f83fa5005286a7fe593b055f0d7771a7dce4655
   subpackages:

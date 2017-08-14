@@ -1,41 +1,65 @@
 package server
 
 import (
+	"net/http"
 	"time"
 
-	"github.com/gin-gonic/gin"
+	"github.com/go-chi/chi/middleware"
 	"github.com/rs/zerolog"
 )
 
 /*
-Logger :
+RequestLogger :
 */
-func Logger(logger zerolog.Logger, enableLogs bool) gin.HandlerFunc {
+type RequestLogger func(http.Handler) http.Handler
 
-	return func(c *gin.Context) {
+/*
+logger :
+*/
+type requestLogger struct {
+	logger     zerolog.Logger
+	enableLogs bool
+}
 
-		if !enableLogs {
-			c.Next()
-			return
-		}
-
-		// Start timer
-		start := time.Now()
-		path := c.Request.URL.Path
-
-		// Process request
-		c.Next()
-
-		end := time.Now()
-		latency := end.Sub(start)
-
-		log := logger.Info()
-		log.Time("at", end).
-			Int64("latency", int64(latency/time.Microsecond)).
-			Int("status", c.Writer.Status()).
-			Str("ip", c.ClientIP()).
-			Str("method", c.Request.Method).
-			Str("path", path).
-			Msg(c.Errors.ByType(gin.ErrorTypePrivate).String())
+/*
+NewRequestLogger :
+*/
+func NewRequestLogger(logger zerolog.Logger, enableLogs bool) RequestLogger {
+	l := requestLogger{
+		logger:     logger,
+		enableLogs: enableLogs,
 	}
+	return l.middleware
+}
+
+func (l requestLogger) middleware(next http.Handler) http.Handler {
+	if !l.enableLogs {
+		return next
+	}
+
+	fn := func(w http.ResponseWriter, r *http.Request) {
+
+		ww := middleware.NewWrapResponseWriter(w, r.ProtoMajor)
+
+		start := time.Now()
+
+		defer func() {
+			end := time.Now()
+			latency := end.Sub(start)
+
+			log := l.logger.Info()
+			log.Time("at", end).
+				Int64("latency", int64(latency/time.Microsecond)).
+				Int("status", ww.Status()).
+				Int("bytes", ww.BytesWritten()).
+				Str("ip", r.RemoteAddr).
+				Str("method", r.Method).
+				Str("path", r.URL.Path).
+				Msg("")
+		}()
+
+		next.ServeHTTP(ww, r)
+	}
+
+	return http.HandlerFunc(fn)
 }

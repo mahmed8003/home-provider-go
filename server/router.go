@@ -17,7 +17,7 @@ func addRoutes(ctx app.Context, router chi.Router) {
 	router.Route("/v1", func(r chi.Router) {
 		r.Route("/users", func(userRouter chi.Router) {
 			user := controllers.NewUserController(ctx)
-			userRouter.Post("/", user.CreateUser)
+			userRouter.Get("/", user.CreateUser)
 		})
 	})
 }
