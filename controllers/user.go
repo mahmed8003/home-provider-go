@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"home-provider/app"
+	"home-provider/boom"
 	"home-provider/forms"
 
 	routing "github.com/go-ozzo/ozzo-routing"
@@ -28,15 +29,15 @@ CreateUser :
 */
 func (u UserController) CreateUser(c *routing.Context) error {
 
-	/*
-		var json forms.UserSignup
-		if c.BindJSON(&json) == nil {
-			c.JSON(http.StatusOK, json)
-		} else {
-			//c.JSON(406, gin.H{"message": "Invalid form", "form": json})
-			//c.Abort()
-		}
-	*/
-	var json forms.UserSignup
-	return c.Write(json)
+	var form forms.UserSignup
+	if err := c.Read(&form); err != nil {
+		return err
+	}
+
+	if err := form.Validate(); err != nil {
+		return err
+	}
+	//return c.Write(json)
+
+	return boom.BadRequest("I am bad request")
 }

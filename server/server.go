@@ -17,6 +17,7 @@ func NewRouter(ctx app.Context) *routing.Router {
 
 	router.Use(
 		NewRequestLogger(ctx.Logger(), config.EnableLogs),
+		errorHandler,
 	)
 
 	addRoutes(ctx, router)

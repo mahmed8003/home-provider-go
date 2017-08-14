@@ -16,7 +16,7 @@ func addRoutes(ctx app.Context, router *routing.Router) {
 		userRouter := v1.Group("/users")
 		{
 			user := controllers.NewUserController(ctx)
-			userRouter.Get("", user.CreateUser)
+			userRouter.Post("", user.CreateUser)
 		}
 	}
 }
