@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/go-chi/chi/middleware"
+	routing "github.com/go-ozzo/ozzo-routing"
 	"github.com/rs/zerolog"
 )
 
@@ -24,7 +24,7 @@ type requestLogger struct {
 /*
 NewRequestLogger :
 */
-func NewRequestLogger(logger zerolog.Logger, enableLogs bool) RequestLogger {
+func NewRequestLogger(logger zerolog.Logger, enableLogs bool) routing.Handler {
 	l := requestLogger{
 		logger:     logger,
 		enableLogs: enableLogs,
@@ -32,34 +32,77 @@ func NewRequestLogger(logger zerolog.Logger, enableLogs bool) RequestLogger {
 	return l.middleware
 }
 
-func (l requestLogger) middleware(next http.Handler) http.Handler {
+func (l requestLogger) middleware(c *routing.Context) error {
 	if !l.enableLogs {
-		return next
+		return c.Next()
 	}
 
-	fn := func(w http.ResponseWriter, r *http.Request) {
+	start := time.Now()
+	req := c.Request
+	rw := &LogResponseWriter{c.Response, http.StatusOK, 0}
+	c.Response = rw
 
-		ww := middleware.NewWrapResponseWriter(w, r.ProtoMajor)
+	err := c.Next()
 
-		start := time.Now()
+	end := time.Now()
+	latency := end.Sub(start)
 
-		defer func() {
-			end := time.Now()
-			latency := end.Sub(start)
-
-			log := l.logger.Info()
-			log.Time("at", end).
-				Int64("latency", int64(latency/time.Microsecond)).
-				Int("status", ww.Status()).
-				Int("bytes", ww.BytesWritten()).
-				Str("ip", r.RemoteAddr).
-				Str("method", r.Method).
-				Str("path", r.URL.Path).
-				Msg("")
-		}()
-
-		next.ServeHTTP(ww, r)
+	var log *zerolog.Event
+	if err != nil {
+		log = l.logger.Error()
+		log.Err(err)
+	} else {
+		log = l.logger.Info()
 	}
 
-	return http.HandlerFunc(fn)
+	log.Time("at", end).
+		Int64("latency", int64(latency/time.Microsecond)).
+		Int("status", rw.Status).
+		Int64("bytes", rw.BytesWritten).
+		Str("ip", getClientIP(req)).
+		Str("method", req.Method).
+		Str("path", req.URL.Path).
+		Msg("")
+
+	return err
+}
+
+/*
+LogResponseWriter :
+*/
+type LogResponseWriter struct {
+	http.ResponseWriter
+	Status       int
+	BytesWritten int64
+}
+
+/*
+Write :
+*/
+func (r *LogResponseWriter) Write(p []byte) (int, error) {
+	written, err := r.ResponseWriter.Write(p)
+	r.BytesWritten += int64(written)
+	return written, err
+}
+
+/*
+WriteHeader :
+*/
+func (r *LogResponseWriter) WriteHeader(status int) {
+	r.Status = status
+	r.ResponseWriter.WriteHeader(status)
+}
+
+/*
+GetClientIP :
+*/
+func getClientIP(req *http.Request) string {
+	ip := req.Header.Get("X-Real-IP")
+	if ip == "" {
+		ip = req.Header.Get("X-Forwarded-For")
+		if ip == "" {
+			ip = req.RemoteAddr
+		}
+	}
+	return ip
 }

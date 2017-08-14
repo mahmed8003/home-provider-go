@@ -2,7 +2,8 @@ package controllers
 
 import (
 	"home-provider/app"
-	"net/http"
+
+	routing "github.com/go-ozzo/ozzo-routing"
 )
 
 /*
@@ -24,7 +25,7 @@ func NewUserController(ctx app.Context) *UserController {
 /*
 CreateUser :
 */
-func (u UserController) CreateUser(w http.ResponseWriter, r *http.Request) {
+func (u UserController) CreateUser(c *routing.Context) error {
 	/*
 		var json forms.UserSignup
 		if c.BindJSON(&json) == nil {
@@ -34,6 +35,5 @@ func (u UserController) CreateUser(w http.ResponseWriter, r *http.Request) {
 			//c.Abort()
 		}
 	*/
-	w.Write([]byte("hi"))
-
+	return c.Write("I am user list")
 }

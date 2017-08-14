@@ -1,12 +1,12 @@
-hash: 5e849c6209692344be9206d952fd7a7b2e440df1afd71f0f1d801b8927ca7033
-updated: 2017-08-14T13:20:19.316554029+05:00
+hash: 57aa47552a3c9d58bb07de52419e0c8a2c667a6163b2179825f6cc0b5fae8365
+updated: 2017-08-14T15:28:17.569296636+05:00
 imports:
 - name: github.com/fsnotify/fsnotify
   version: 4da3e2cfbabc9f751898f250b49f2439785783a1
-- name: github.com/go-chi/chi
-  version: 25354a53cca531cb2efd3f1d3c565d90ff04d802
+- name: github.com/go-ozzo/ozzo-routing
+  version: 4d63a23d3f8421c05db3999d8b0b765ed6a4bde4
   subpackages:
-  - middleware
+  - content
 - name: github.com/go-redis/redis
   version: 89515eebd1b5761486abd32d9e84a8f55dda7740
   subpackages:
@@ -15,8 +15,12 @@ imports:
   - internal/hashtag
   - internal/pool
   - internal/proto
+- name: github.com/golang/gddo
+  version: 15156cc620204ad93b310a034ea46ae536d17da7
+  subpackages:
+  - httputil/header
 - name: github.com/hashicorp/hcl
-  version: 392dba7d905ed5d04a5794ba89f558b27e2ba1ca
+  version: c3e054bfd4dcf77b9965ed2b79b22afa2f41d4eb
   subpackages:
   - hcl/ast
   - hcl/parser
@@ -26,8 +30,6 @@ imports:
   - json/parser
   - json/scanner
   - json/token
-- name: github.com/kataras/golog
-  version: 2ed680e7b1f34147164fa8073373e14fce02ac30
 - name: github.com/magiconair/properties
   version: be5ece7dd465ab0765a9682137865547526d1dfb
 - name: github.com/mitchellh/mapstructure

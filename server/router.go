@@ -3,21 +3,20 @@ package server
 import (
 	"home-provider/app"
 	"home-provider/controllers"
-	"net/http"
 
-	"github.com/go-chi/chi"
+	routing "github.com/go-ozzo/ozzo-routing"
+	"github.com/go-ozzo/ozzo-routing/content"
 )
 
-func addRoutes(ctx app.Context, router chi.Router) {
+func addRoutes(ctx app.Context, router *routing.Router) {
 
-	router.Get("/ping", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("pongno"))
-	})
-
-	router.Route("/v1", func(r chi.Router) {
-		r.Route("/users", func(userRouter chi.Router) {
+	v1 := router.Group("/v1")
+	v1.Use(content.TypeNegotiator(content.JSON))
+	{
+		userRouter := v1.Group("/users")
+		{
 			user := controllers.NewUserController(ctx)
-			userRouter.Get("/", user.CreateUser)
-		})
-	})
+			userRouter.Get("", user.CreateUser)
+		}
+	}
 }

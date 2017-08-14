@@ -3,25 +3,22 @@ package server
 import (
 	"home-provider/app"
 
-	"github.com/go-chi/chi"
-	"github.com/go-chi/chi/middleware"
+	routing "github.com/go-ozzo/ozzo-routing"
 )
 
 /*
 NewRouter :
 */
-func NewRouter(ctx app.Context) chi.Router {
+func NewRouter(ctx app.Context) *routing.Router {
 
-	r := chi.NewRouter()
+	config := ctx.Config().Server
+	router := routing.New()
 
-	// A good base middleware stack
-	r.Use(middleware.RequestID)
-	r.Use(middleware.RealIP)
-	//r.Use(middleware.Logger)
-	r.Use(NewRequestLogger(ctx.Logger(), true))
-	r.Use(middleware.Recoverer)
+	router.Use(
+		NewRequestLogger(ctx.Logger(), config.EnableLogs),
+	)
 
-	addRoutes(ctx, r)
+	addRoutes(ctx, router)
 
-	return r
+	return router
 }
