@@ -10,3 +10,7 @@ import:
   version: ^6.5.6
 - package: github.com/go-ozzo/ozzo-routing
   version: ^2.1.2
+- package: github.com/go-ozzo/ozzo-validation
+  version: ^3.2.0
+  subpackages:
+  - is

@@ -13,6 +13,7 @@ func NewRouter(ctx app.Context) *routing.Router {
 
 	config := ctx.Config().Server
 	router := routing.New()
+	router.IgnoreTrailingSlash = true
 
 	router.Use(
 		NewRequestLogger(ctx.Logger(), config.EnableLogs),

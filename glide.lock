@@ -1,5 +1,5 @@
-hash: 57aa47552a3c9d58bb07de52419e0c8a2c667a6163b2179825f6cc0b5fae8365
-updated: 2017-08-14T15:28:17.569296636+05:00
+hash: f45518317de67b0500bd4195d6d7ec35baff509b8100deb774ae42e0521c91d9
+updated: 2017-08-14T15:49:42.148954894+05:00
 imports:
 - name: github.com/fsnotify/fsnotify
   version: 4da3e2cfbabc9f751898f250b49f2439785783a1
@@ -7,6 +7,10 @@ imports:
   version: 4d63a23d3f8421c05db3999d8b0b765ed6a4bde4
   subpackages:
   - content
+- name: github.com/go-ozzo/ozzo-validation
+  version: a2f38cc94da87eaa22792311be67cfcfad703fb0
+  subpackages:
+  - is
 - name: github.com/go-redis/redis
   version: 89515eebd1b5761486abd32d9e84a8f55dda7740
   subpackages:
