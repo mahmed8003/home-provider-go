@@ -2,10 +2,7 @@ package controllers
 
 import (
 	"home-provider/app"
-	"home-provider/forms"
 	"net/http"
-
-	"github.com/gin-gonic/gin"
 )
 
 /*
@@ -27,13 +24,16 @@ func NewUserController(ctx app.Context) *UserController {
 /*
 CreateUser :
 */
-func (u UserController) CreateUser(c *gin.Context) {
-	var json forms.UserSignup
-	if c.BindJSON(&json) == nil {
-		c.JSON(http.StatusOK, json)
-	} else {
-		//c.JSON(406, gin.H{"message": "Invalid form", "form": json})
-		//c.Abort()
-	}
+func (u UserController) CreateUser(w http.ResponseWriter, r *http.Request) {
+	/*
+		var json forms.UserSignup
+		if c.BindJSON(&json) == nil {
+			c.JSON(http.StatusOK, json)
+		} else {
+			//c.JSON(406, gin.H{"message": "Invalid form", "form": json})
+			//c.Abort()
+		}
+	*/
+	w.Write([]byte("hi"))
 
 }

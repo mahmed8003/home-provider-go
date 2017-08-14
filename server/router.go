@@ -5,22 +5,19 @@ import (
 	"home-provider/controllers"
 	"net/http"
 
-	"github.com/gin-gonic/gin"
+	"github.com/go-chi/chi"
 )
 
-func addRoutes(ctx app.Context, router *gin.Engine) {
+func addRoutes(ctx app.Context, router chi.Router) {
 
-	router.GET("/ping", func(c *gin.Context) {
-		c.String(http.StatusOK, "pong")
+	router.Get("/ping", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("pongno"))
 	})
 
-	v1 := router.Group("v1")
-	{
-		// init user controller
-		user := controllers.NewUserController(ctx)
-
-		// create user routes
-		usersRoutes := v1.Group("users")
-		usersRoutes.POST("/", user.CreateUser)
-	}
+	router.Route("/v1", func(r chi.Router) {
+		r.Route("/users", func(userRouter chi.Router) {
+			user := controllers.NewUserController(ctx)
+			userRouter.Post("/", user.CreateUser)
+		})
+	})
 }

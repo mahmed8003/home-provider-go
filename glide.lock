@@ -1,5 +1,5 @@
-hash: 1dcd362bda58ddf6ca5157cfe47b4cc7a8ee86f1b9e2ae48b2ce1146e16cd0f7
-updated: 2017-08-13T22:12:37.46409369+05:00
+hash: 98f83f78e1c06c9b727dcaddfeea0789a1a58fd5e2f2ceb5a8a8d85dfd8495f8
+updated: 2017-08-14T11:02:30.299938046+05:00
 imports:
 - name: github.com/fsnotify/fsnotify
   version: 4da3e2cfbabc9f751898f250b49f2439785783a1
@@ -10,6 +10,8 @@ imports:
   subpackages:
   - binding
   - render
+- name: github.com/go-chi/chi
+  version: 25354a53cca531cb2efd3f1d3c565d90ff04d802
 - name: github.com/go-redis/redis
   version: 89515eebd1b5761486abd32d9e84a8f55dda7740
   subpackages:
@@ -65,7 +67,7 @@ imports:
   subpackages:
   - codec
 - name: golang.org/x/sys
-  version: e42485b6e20ae7d2304ec72e535b103ed350cc02
+  version: c84c1ab9fd18cdd4c23dd021c10f5f46dea95e46
   subpackages:
   - unix
 - name: golang.org/x/text
