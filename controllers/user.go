@@ -38,7 +38,11 @@ func (ctrl UserController) CreateUser(c *routing.Context) error {
 		return err
 	}
 
-	user := models.User{}
+	user := models.User{
+		Name:     form.Name,
+		Mobile:   form.Mobile,
+		Password: form.Password,
+	}
 	userDao := ctrl.ctx.Db().GetUserDao()
 	if err := userDao.CreateUser(&user); err != nil {
 		return err
