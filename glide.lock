@@ -1,5 +1,5 @@
-hash: f45518317de67b0500bd4195d6d7ec35baff509b8100deb774ae42e0521c91d9
-updated: 2017-08-14T15:49:42.148954894+05:00
+hash: 8fcb2be0fd570753129dd63bdb3b891db83023a565b4208d557d515893c5e0cb
+updated: 2017-09-02T20:35:45.843733203+05:00
 imports:
 - name: github.com/fsnotify/fsnotify
   version: 4da3e2cfbabc9f751898f250b49f2439785783a1
@@ -12,7 +12,7 @@ imports:
   subpackages:
   - is
 - name: github.com/go-redis/redis
-  version: 89515eebd1b5761486abd32d9e84a8f55dda7740
+  version: 74d5147d860804ea34633071d0c91a7f4b0b5c3a
   subpackages:
   - internal
   - internal/consistenthash
@@ -20,11 +20,11 @@ imports:
   - internal/pool
   - internal/proto
 - name: github.com/golang/gddo
-  version: 15156cc620204ad93b310a034ea46ae536d17da7
+  version: 2dccccb2f204bf42a2f46fc9ecd6340ec4984fd3
   subpackages:
   - httputil/header
 - name: github.com/hashicorp/hcl
-  version: c3e054bfd4dcf77b9965ed2b79b22afa2f41d4eb
+  version: 392dba7d905ed5d04a5794ba89f558b27e2ba1ca
   subpackages:
   - hcl/ast
   - hcl/parser
@@ -35,34 +35,45 @@ imports:
   - json/scanner
   - json/token
 - name: github.com/magiconair/properties
-  version: be5ece7dd465ab0765a9682137865547526d1dfb
+  version: 8d7837e64d3c1ee4e54a880c5a920ab4316fc90a
 - name: github.com/mitchellh/mapstructure
   version: d0303fe809921458f417bcf828397a65db30a7e4
 - name: github.com/pelletier/go-toml
-  version: 69d355db5304c0f7f809a2edc054553e7142f016
+  version: 9c1b4e331f1e3d98e72600677699fbe212cd6d16
 - name: github.com/rs/zerolog
   version: 2ed2f2c974489526d10329dae76d0f175684109a
   subpackages:
   - internal/json
-  - log
 - name: github.com/spf13/afero
-  version: 9be650865eab0c12963d8753212f4f9c66cdcf12
+  version: ee1bd8ee15a1306d1f9201acc41ef39cd9f99a1b
   subpackages:
   - mem
 - name: github.com/spf13/cast
   version: acbeb36b902d72a7a4c18e8f3241075e7ab763e4
 - name: github.com/spf13/jwalterweatherman
-  version: 0efa5202c04663c757d84f90f5219c1250baf94f
+  version: 12bd96e66386c1960ab0f74ced1362f66f552f7b
 - name: github.com/spf13/pflag
-  version: e57e3eeb33f795204c1ca35f56c44f83227c6e66
+  version: 7aff26db30c1be810f9de5038ec5ef96ac41fd7c
 - name: github.com/spf13/viper
   version: 25b30aa063fc18e48662b86996252eabdcf2f0c7
+- name: go.uber.org/atomic
+  version: 4e336646b2ef9fc6e47be8e21594178f98e5ebcf
+- name: go.uber.org/multierr
+  version: 3c4937480c32f4c13a875a1829af76c98ca3d40a
+- name: go.uber.org/zap
+  version: 3216c4c73e8ebbafff73c456dd27143f4a7c1f94
+  subpackages:
+  - buffer
+  - internal/bufferpool
+  - internal/color
+  - internal/exit
+  - zapcore
 - name: golang.org/x/sys
-  version: c84c1ab9fd18cdd4c23dd021c10f5f46dea95e46
+  version: 7ddbeae9ae08c6a06a59597f0c9edbc5ff2444ce
   subpackages:
   - unix
 - name: golang.org/x/text
-  version: b19bf474d317b857955b12035d2c5acb57ce8b01
+  version: bd91bbf73e9a4a801adbfb97133c992678533126
   subpackages:
   - transform
   - unicode/norm

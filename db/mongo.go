@@ -3,7 +3,7 @@ package db
 import (
 	"home-provider/config"
 
-	"github.com/rs/zerolog"
+	"go.uber.org/zap"
 
 	mgo "gopkg.in/mgo.v2"
 )
@@ -12,7 +12,7 @@ import (
 mongoDB :
 */
 type mongoDB struct {
-	logger zerolog.Logger
+	logger *zap.Logger
 	conn   *mgo.Session
 	db     *mgo.Database
 	//
@@ -22,9 +22,9 @@ type mongoDB struct {
 /*
 ConnectMongo :
 */
-func ConnectMongo(logger zerolog.Logger, config config.Database) (Database, error) {
+func ConnectMongo(logger *zap.Logger, config config.Database) (Database, error) {
 
-	logger.Info().Msg("Connecting to database")
+	logger.Info("Connecting to database")
 	conn, err := mgo.Dial(config.Uri)
 	if err != nil {
 		return nil, err
@@ -55,13 +55,13 @@ func ConnectMongo(logger zerolog.Logger, config config.Database) (Database, erro
 		userDao: userDao,
 	}
 
-	logger.Info().Msg("Database connection successfull")
+	logger.Info("Database connection successfull")
 	return mongo, nil
 }
 
 // Close : Disconnect from database.
 func (db *mongoDB) Close() {
-	db.logger.Info().Msg("Disconnecting from database")
+	db.logger.Info("Disconnecting from database")
 	db.conn.Close()
 }
 

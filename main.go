@@ -8,14 +8,13 @@ import (
 	"home-provider/config"
 	"home-provider/db"
 	"home-provider/server"
-	"home-provider/utils"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 
-	"github.com/rs/zerolog"
+	"go.uber.org/zap"
 )
 
 func main() {
@@ -26,24 +25,22 @@ func main() {
 	}
 	flag.Parse()
 
-	if err := config.LoadConfig(*enviroment); err != nil {
+	appConfig, err := config.LoadConfig(*enviroment)
+	if err != nil {
 		panic(fmt.Errorf("Invalid application configuration: %s", err))
 	}
 
-	appConfig := config.GetConfig()
-
-	zerolog.SetGlobalLevel(utils.GetLogLevelByString(appConfig.LogLevel))
-	logger := zerolog.New(os.Stdout).With().Timestamp().Logger()
+	logger, _ := zap.NewDevelopment()
+	defer logger.Sync()
 
 	database, err := db.ConnectMongo(logger, appConfig.Database)
 	if err != nil {
-		logger.Fatal().Err(err).Msg("Failed to connect to database")
+		logger.Fatal("Failed to connec to database", zap.Error(err))
 	}
 
-	if err := db.ConnectRedis(logger, appConfig.Redis); err != nil {
-		logger.Fatal().Err(err).Msg("Failed to connect to redis")
-	} else {
-		logger.Info().Msg("Redis connection successfull")
+	redis, err := db.ConnectRedis(logger, appConfig.Redis)
+	if err != nil {
+		logger.Fatal("Failed to connec to redis", zap.Error(err))
 	}
 
 	addr := ":" + os.Getenv("PORT")
@@ -51,7 +48,7 @@ func main() {
 		addr = appConfig.Server.Port
 	}
 	appConfig.Server.Port = addr
-	appCtx := app.NewContext(*enviroment, appConfig, logger, database, db.GetRedis())
+	appCtx := app.NewContext(*enviroment, appConfig, logger, redis, database)
 
 	// create router
 	router := server.NewRouter(appCtx)
@@ -62,9 +59,9 @@ func main() {
 		Handler: router,
 	}
 	go func() {
-		logger.Info().Msg("Server listening at " + addr)
+		logger.Info("Server listening at " + addr)
 		if err := server.ListenAndServe(); err != nil {
-			logger.Error().Err(err).Msg("Server error")
+			logger.Error("Server error", zap.Error(err))
 		}
 	}()
 
@@ -73,13 +70,13 @@ func main() {
 	signal.Notify(quit, syscall.SIGINT)
 	<-quit
 
-	logger.Info().Msg("Shutting down server ...")
+	logger.Info("Shutting down server ...")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	if err := server.Shutdown(ctx); err != nil {
-		logger.Fatal().Err(err).Msg("Server shutdown")
+		logger.Fatal("Server shutdown", zap.Error(err))
 	}
 	database.Close()
-	db.DisconnectRedis()
-	logger.Info().Msg("Exiting ...")
+	redis.Close()
+	logger.Info("Exiting ...")
 }

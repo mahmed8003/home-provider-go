@@ -4,65 +4,60 @@ import (
 	"home-provider/config"
 	"home-provider/db"
 
-	"github.com/go-redis/redis"
-	"github.com/rs/zerolog"
+	"go.uber.org/zap"
 )
 
 /*
 Context :
 */
-type Context struct {
+type Context interface {
+	Env() string
+	Config() *config.AppConfig
+	Logger() *zap.Logger
+	Redis() db.Redis
+	Db() db.Database
+}
+
+/*
+appContext :
+*/
+type appContext struct {
 	env    string
-	config config.AppConfig
-	logger zerolog.Logger
+	config *config.AppConfig
+	logger *zap.Logger
+	redis  db.Redis
 	db     db.Database
-	redis  *redis.Client
 }
 
 /*
 NewContext :
 */
-func NewContext(env string, config config.AppConfig, logger zerolog.Logger, db db.Database, redis *redis.Client) Context {
-	return Context{
+func NewContext(env string, config *config.AppConfig, logger *zap.Logger, redis db.Redis, db db.Database) Context {
+	return &appContext{
 		env:    env,
 		config: config,
 		logger: logger,
-		db:     db,
 		redis:  redis,
+		db:     db,
 	}
 }
 
-/*
-Env :
-*/
-func (c Context) Env() string {
-	return c.env
+func (ctx *appContext) Env() string {
+	return ctx.env
 }
 
-/*
-Config :
-*/
-func (c Context) Config() config.AppConfig {
-	return c.config
+func (ctx *appContext) Config() *config.AppConfig {
+	return ctx.config
 }
 
-/*
-Logger :
-*/
-func (c Context) Logger() zerolog.Logger {
-	return c.logger
+func (ctx *appContext) Logger() *zap.Logger {
+	return ctx.logger
 }
 
-/*
-Db :
-*/
-func (c Context) Db() db.Database {
-	return c.db
+func (ctx *appContext) Redis() db.Redis {
+	return ctx.redis
 }
 
-/*
-Redis :
-*/
-func (c Context) Redis() *redis.Client {
-	return c.redis
+func (ctx *appContext) Db() db.Database {
+	return ctx.db
 }

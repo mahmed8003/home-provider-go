@@ -5,7 +5,7 @@ import (
 	"time"
 
 	routing "github.com/go-ozzo/ozzo-routing"
-	"github.com/rs/zerolog"
+	"go.uber.org/zap"
 )
 
 /*
@@ -17,14 +17,14 @@ type RequestLogger func(http.Handler) http.Handler
 logger :
 */
 type requestLogger struct {
-	logger     zerolog.Logger
+	logger     *zap.Logger
 	enableLogs bool
 }
 
 /*
 NewRequestLogger :
 */
-func NewRequestLogger(logger zerolog.Logger, enableLogs bool) routing.Handler {
+func NewRequestLogger(logger *zap.Logger, enableLogs bool) routing.Handler {
 	l := requestLogger{
 		logger:     logger,
 		enableLogs: enableLogs,
@@ -47,22 +47,19 @@ func (l requestLogger) middleware(c *routing.Context) error {
 	end := time.Now()
 	latency := end.Sub(start)
 
-	var log *zerolog.Event
-	if err != nil {
-		log = l.logger.Error()
-		log.Err(err)
-	} else {
-		log = l.logger.Info()
-	}
+	fAt := zap.Time("at", end)
+	fLatency := zap.Int64("latency", int64(latency/time.Microsecond))
+	fStatus := zap.Int("status", rw.Status)
+	fBytes := zap.Int64("bytes", rw.BytesWritten)
+	fIP := zap.String("ip", getClientIP(req))
+	fMethod := zap.String("method", req.Method)
+	fPath := zap.String("path", req.URL.Path)
 
-	log.Time("at", end).
-		Int64("latency", int64(latency/time.Microsecond)).
-		Int("status", rw.Status).
-		Int64("bytes", rw.BytesWritten).
-		Str("ip", getClientIP(req)).
-		Str("method", req.Method).
-		Str("path", req.URL.Path).
-		Msg("")
+	if err != nil {
+		l.logger.Error("", fAt, fLatency, fStatus, fBytes, fIP, fMethod, fPath, zap.Error(err))
+	} else {
+		l.logger.Info("", fAt, fLatency, fStatus, fBytes, fIP, fMethod, fPath)
+	}
 
 	return err
 }

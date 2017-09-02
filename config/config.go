@@ -58,21 +58,19 @@ var config AppConfig
 /*
 LoadConfig : Load configuration based on envviourment
 */
-func LoadConfig(env string) error {
+func LoadConfig(env string) (*AppConfig, error) {
 	v := viper.New()
 	v.SetConfigType("json")
 	v.SetConfigName(env)
 	v.AddConfigPath("./")
 	if err := v.ReadInConfig(); err != nil {
-		return fmt.Errorf("Failed to read the configuration file: %s", err)
+		return nil, fmt.Errorf("Failed to read the configuration file: %s", err)
 	}
 
-	return v.Unmarshal(&config)
-}
+	var config AppConfig
+	if err := v.Unmarshal(&config); err != nil {
+		return nil, err
+	}
 
-/*
-GetConfig : It will return
-*/
-func GetConfig() AppConfig {
-	return config
+	return &config, nil
 }
